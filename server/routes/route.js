@@ -5,6 +5,17 @@ const pool = require("../database");
 
 const router = express.Router();
 
+router.get('/users', async (req, res) => {
+    try {
+      const result = await pool.query("SELECT user_id, username FROM accounts");
+      res.status(200).json(result.rows);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      res.status(500).json({ error: "Database error" });
+    }
+});
+
+
 router.post("/register",
     [
         body("username").isLength({ min: 3 }),
