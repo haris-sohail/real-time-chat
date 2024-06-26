@@ -6,7 +6,7 @@ import Home from './components/Home';
 
 function App() {
   return (
-    <div className="App h-screen flex items-center justify-center">
+    <div className="App h-screen">
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Signup />} />
