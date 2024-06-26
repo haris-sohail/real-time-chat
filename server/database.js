@@ -23,15 +23,17 @@ pool.query(createTblQry, (err, res) => {
 const createMessagesTblQry = `
     CREATE TABLE IF NOT EXISTS messages (
     message_id SERIAL PRIMARY KEY,
-    user_id INT REFERENCES accounts(user_id),
-    username VARCHAR(50) NOT NULL,
+    sender_id INT REFERENCES accounts(user_id),
+    sender_username VARCHAR(50) NOT NULL,
+    receiver_username VARCHAR(50) NOT NULL,
     message TEXT NOT NULL,
     timestamp TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-    );`
+    );`;
 
 pool.query(createMessagesTblQry, (err, res) => {
     console.log(err, res);
 });
+
 
 
 
