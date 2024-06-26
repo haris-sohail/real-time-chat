@@ -1,31 +1,38 @@
 import React, { useState } from 'react'
 import msgIcon from '../assets/msg.png'
 import { toast } from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-      e.preventDefault();
+        e.preventDefault();
 
-      const response = await fetch('http://localhost:3000/login', {
-          method: 'POST',
-          headers: {
-              'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ username, password }),
-      });
+        const response = await fetch('http://localhost:3001/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ username, password }),
+        });
 
-      const data = await response.json();
-      if (response.ok) {
-          toast.success('Login successful');
-      } else {
-          setError(data.error || 'An error occurred');
-          toast.error(data.error || 'An error occurred');
-      }
+        const data = await response.json();
+        if (response.ok) {
+            toast.success('Login successful');
+            navigate('/home', { state: { username } })
+        } else {
+            setError(data.error || 'An error occurred');
+            toast.error(data.error || 'An error occurred');
+        }
     };
+
+    const handleSignUp = () => {
+        navigate('/signup');
+    }
     return (
         <div className='h-screen flex w-full'>
             <div className='left flex justify-center items-center flex-1'>
@@ -49,6 +56,10 @@ function Login() {
                         />
                         <button className='bg-gradient-to-r-custom from-customPurple to-customPurpleLight text-white rounded-md p-2'>
                             <h5>LOGIN</h5>
+                        </button>
+
+                        <button onClick={handleSignUp} className='bg-gradient-to-r-custom from-customPurple to-customPurpleLight text-white rounded-md p-2'>
+                            <h5>SIGNUP</h5>
                         </button>
                     </form>
                 </div>

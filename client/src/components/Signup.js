@@ -45,6 +45,10 @@ function Signup() {
         }
     }
 
+    const handleLogin = () => {
+        navigate('/login')
+    }
+
     return (
         <div className='h-screen flex w-full'>
 
@@ -70,6 +74,8 @@ function Signup() {
 
                         <button onClick={handleSubmit} className='bg-gradient-to-r-custom
                         from-customPurple to-customPurpleLight text-white rounded-md p-2'><h5>SIGNUP</h5></button>
+                         <button onClick={handleLogin} className='bg-gradient-to-r-custom
+                        from-customPurple to-customPurpleLight text-white rounded-md p-2'><h5>LOGIN</h5></button>
                     </form>
 
                 </div>
