@@ -17,6 +17,14 @@ router.post("/register",
         }
 
         const { username, password } = req.body;
+
+        // checking if user already exists in the database
+        const userExists = await pool.query("SELECT * FROM accounts WHERE username = $1", [username]);
+        if (userExists.rows.length > 0) {
+            return res.status(409).
+                json({ error: "Username already exists" });
+        }
+        
         const hashedPassword = await bcrypt.hash(password, 10);
 
         try {
