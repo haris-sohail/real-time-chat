@@ -9,24 +9,43 @@ function Login() {
     const [error, setError] = useState('');
     const navigate = useNavigate();
 
+    const usernameFilled = () => {
+        if (!username) {
+            toast.error("Please fill the username field");
+            return false;
+        }
+        return true;
+    }
+
+    const passwordFilled = () => {
+        if (!password) {
+            toast.error("Please fill the password field");
+            return false;
+        }
+        return true;
+    }
+    
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const response = await fetch('http://localhost:3001/login', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ username, password }),
-        });
+        if (usernameFilled() && passwordFilled()) {
 
-        const data = await response.json();
-        if (response.ok) {
-            toast.success('Login successful');
-            navigate('/home', { state: { username } })
-        } else {
-            setError(data.error || 'An error occurred');
-            toast.error(data.error || 'An error occurred');
+            const response = await fetch('http://localhost:3001/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                toast.success('Login successful');
+                navigate('/home', { state: { username } })
+            } else {
+                setError(data.error || 'An error occurred');
+                toast.error(data.error || 'An error occurred');
+            }
         }
     };
 

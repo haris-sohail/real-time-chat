@@ -75,4 +75,18 @@ router.post('/messages', async (req, res) => {
   }
 });
 
+// get messages by sender and receiver
+router.get('/messages/:sender_username/:receiver_username', async (req, res) => {
+  const senderUsername = req.params.sender_username;
+  const receiverUsername = req.params.receiver_username;
+
+  try {
+    const result = await pool.query("SELECT * FROM messages WHERE sender_username = $1 AND receiver_username = $2 ORDER BY timestamp ASC", [senderUsername, receiverUsername]);
+    res.status(200).json(result.rows);
+  } catch (err) {
+    console.error("Error fetching messages:", err);
+    res.status(500).json({ error: "Database error" });
+  }
+});
+
 module.exports = router;
