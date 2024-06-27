@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Person from './Person'
 import axios from 'axios'
 import { useLocation, useNavigate } from 'react-router-dom'
+import Chat from './Chat'
 
 function Home() {
     const useEffectCalled = false;
@@ -11,6 +12,7 @@ function Home() {
     const data = location.state
     const username = data.username
     const navigate = useNavigate()
+    let loading = false;
 
     // scroll effects
     useEffect(() => {
@@ -65,17 +67,25 @@ function Home() {
         };
     }, []);
 
+    const getAllUsers = async () => {
+        axios.get('http://localhost:3001/users')
+            .then(res => {
+                if (res.data) {
+                    setUsers(res.data)
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+            .finally(() => {
+                loading = false;
+            })
+    }
+
     useEffect(() => {
+        loading = true;
         if (!useEffectCalled) {
-            axios.get('http://localhost:3001/users')
-                .then(res => {
-                    if (res.data) {
-                        setUsers(res.data)
-                    }
-                })
-                .catch(err => {
-                    console.log(err)
-                })
+            getAllUsers()
         }
     }, [])
 
@@ -83,7 +93,11 @@ function Home() {
         if (users) {
             const usersComp = users.map(user => {
                 if (user.username !== username) {
-                    return <Person key={user.user_id} username={user.username} />
+                    return <Person
+                        key={user.user_id}
+                        loggedInUsername={username}
+                        username={user.username}
+                    />
                 }
             })
 
@@ -95,31 +109,41 @@ function Home() {
         navigate('/login')
     }
 
-    return (
-        <div className='w-full h-full flex items-center justify-center flex-col'>
-            <div className='first-row w-3/4 flex justify-between items-center p-5'>
-                <h1 className='text-4xl'>Welcome <span className='text-customPurple'>{username}</span></h1>
-                <button onClick={handleLogOut}
-                    className='border-2 p-2 border-red-300 rounded-xl hover:bg-red-200 transition'>
-                    LOGOUT
-                </button>
-            </div>
+    if (loading) {
+        return <h1>Loading...</h1>
+    }
 
-            <div className='h-3/4 w-3/4 p-5 rounded-2xl bg-slate-100 flex'>
-                <div className='people w-3/12 h-full flex flex-col'>
-                    <h2 className='w-fit mx-auto'>People</h2>
+    else {
+        return (
+            <div className='w-full h-full flex items-center justify-center flex-col'>
+                <div className='first-row w-3/4 flex justify-between items-center p-5'>
+                    <h1 className='text-4xl'>Welcome <span className='text-customPurple'>{username}</span></h1>
+                    <button onClick={handleLogOut}
+                        className='border-2 p-2 border-red-300 rounded-xl hover:bg-red-200 transition'>
+                        LOGOUT
+                    </button>
+                </div>
 
-                    <div className='people-list py-3 overflow-y-auto custom-scrollbar flex-grow'>
-                        {usersComponents}
+                <div className='h-3/4 w-3/4 p-5 rounded-2xl bg-slate-100 flex'>
+                    <div className='people w-3/12 h-full flex flex-col'>
+                        <h2 className='w-fit mx-auto'>People</h2>
+
+                        <div className='people-list py-3 overflow-y-auto custom-scrollbar flex-grow'>
+                            {usersComponents}
+                        </div>
+                    </div>
+
+                    <div className='chat w-3/4'>
+                        <Chat />
                     </div>
                 </div>
-
-                <div className='chat w-3/4'>
-                </div>
             </div>
-        </div>
 
-    )
+        )
+    }
+
 }
 
 export default Home
+
+

@@ -11,7 +11,7 @@ const app = express();
 app.use(cors());
 app.use(express.json()); 
 app.use("/", routes);
-app.use("/api", messagesRoute);
+app.use("/message", messagesRoute);
 const server = http.createServer(app);
 const io = socketIo(server);
 
