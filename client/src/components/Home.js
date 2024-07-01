@@ -133,7 +133,7 @@ function Home() {
                         </div>
                     </div>
 
-                    <div className='chat w-3/4'>
+                    <div className='chat w-3/4 h-full flex flex-col'>
                         <Chat />
                     </div>
                 </div>

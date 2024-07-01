@@ -6,7 +6,6 @@ import axios from 'axios'
 const socket = io('http://localhost:3001');
 
 function Chat() {
-    let useEffectCalled = false
     const loggedInUser = useSelector(state => state.chat.loggedInUser)
     let clickedUser = useSelector(state => state.chat.clickedUser)
     const [sentMessages, setSentMessages] = useState([])
@@ -70,11 +69,37 @@ function Chat() {
         }
     }, [loggedInUser, clickedUser])
 
-    return (
-        <div>
+    // Combine and sort messages by timestamp
+    const allMessages = [...sentMessages, ...receivedMessages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-        </div>
-    )
+    if (clickedUser && allMessages.length === 0) {
+        return (
+            <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
+                {clickedUser && (
+                    <h2 className='mb-4 text-center'>Chat with {clickedUser}</h2>
+                )}
+                <div className="flex flex-1 items-center justify-center">
+                    <em><h4>Start the conversation</h4></em>
+                </div>
+            </div>
+        );
+    } else {
+        return (
+            <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
+                {clickedUser && (
+                    <h2 className='mb-4 text-center'>Chat with {clickedUser}</h2>
+                )}
+                {allMessages.map((message, index) => (
+                    <div key={index} className={`mb-2 ${message.sender_username === loggedInUser ? 'text-right' : 'text-left'}`}>
+                        <span className={`${message.sender_username === loggedInUser ? 'bg-customPurpleLight' : 'bg-customPurpleLight'} px-2 py-1 rounded`}>
+                            {message.message}
+                        </span>
+                        <p className='text-sm p-1 text-gray-500'>{new Date(message.timestamp).toLocaleString()}</p>
+                    </div>
+                ))}
+            </div>
+        );
+    }
 }
 
 export default Chat
