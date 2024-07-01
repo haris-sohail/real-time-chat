@@ -84,7 +84,7 @@ function Chat() {
 
     if (loading) {
         return (
-            <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
+            <div className="flex flex-col flex-1 p-2 h-full overflow-y-scroll custom-scrollbar">
                 {clickedUser && (
                     <h2 className='mb-4 text-center'>Chat with {clickedUser}</h2>
                 )}
@@ -95,21 +95,31 @@ function Chat() {
         );
     }
 
-    if (!loading && clickedUser && allMessages.length === 0) {
+    if (!loading && !clickedUser) {
         return (
-            <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
+            <div className="flex flex-col flex-1 p-2 h-full overflow-y-scroll custom-scrollbar">
+                <div className="flex flex-1 items-center justify-center">
+                    <em><h4>Select a user to chat with</h4></em>
+                </div>
+            </div>
+        );
+    }
+
+    if (clickedUser && allMessages.length === 0) {
+        return (
+            <div className="flex flex-col flex-1 p-2 h-full overflow-y-scroll custom-scrollbar">
                 {clickedUser && (
                     <h2 className='mb-4 text-center'>Chat with {clickedUser}</h2>
                 )}
                 <div className="flex flex-1 items-center justify-center">
                     <em><h4>Start the conversation</h4></em>
                 </div>
-                <InputText socket={socket} updateSentMessages={updateSentMessages} />
+                <InputText socket={socket} loggedInUser={loggedInUser} clickedUser={clickedUser} />
             </div>
         );
     } else {
         return (
-            <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
+            <div className="flex flex-col flex-1 p-2 h-full overflow-y-scroll custom-scrollbar">
                 {clickedUser && (
                     <h2 className='mb-4 text-center'>Chat with {clickedUser}</h2>
                 )}

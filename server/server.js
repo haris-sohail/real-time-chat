@@ -35,13 +35,13 @@ io.on('connection', socket => {
     });
 
     socket.on('send-chat-message', async data => {
-        const { sender_username, receiver_username, message } = data;
+        const { sender_username, receiver_username, message, timestamp } = data;
         try {
           
-            await pool.query("INSERT INTO messages (sender_username, receiver_username, message) VALUES ($1, $2, $3)", [sender_username, receiver_username, message]);
+            await pool.query("INSERT INTO messages (sender_username, receiver_username, message, timestamp) VALUES ($1, $2, $3, $4)", [sender_username, receiver_username, message, timestamp]);
     
           
-            socket.broadcast.emit('chat-message', { message, sender_username, receiver_username });
+            socket.broadcast.emit('chat-message', { message, sender_username, receiver_username, timestamp });
         } catch (err) {
             console.error(err);
         }

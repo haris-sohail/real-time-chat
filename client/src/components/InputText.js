@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { useSelector } from 'react-redux';
 
 const InputText = ({ socket, updateSentMessages }) => {
@@ -18,7 +17,8 @@ const InputText = ({ socket, updateSentMessages }) => {
       socket.emit('send-chat-message', {
         sender_username: loggedInUser,
         receiver_username: clickedUser,
-        message
+        message,
+        timestamp: new Date().toISOString()
       });
 
       // Update sentMessages in Chat component
@@ -26,7 +26,7 @@ const InputText = ({ socket, updateSentMessages }) => {
         sender_username: loggedInUser,
         receiver_username: clickedUser,
         message,
-        timestamp: new Date().toISOString() // Example timestamp
+        timestamp: new Date().toISOString()
       });
 
       setMessage('');
@@ -66,7 +66,7 @@ const InputText = ({ socket, updateSentMessages }) => {
           marginLeft: '10px',
           padding: '10px 20px',
           fontSize: '16px',
-          backgroundColor: '#007BFF',
+          backgroundColor: '#a466ff',
           color: '#fff',
           border: 'none',
           borderRadius: '8px',
