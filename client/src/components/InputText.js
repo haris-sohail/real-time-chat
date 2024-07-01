@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
 
-const InputText = ({ socket}) => {
-const loggedInUser = useSelector(state => state.chat.loggedInUser);
-const clickedUser = useSelector(state => state.chat.clickedUser);
+const InputText = ({ socket, updateSentMessages }) => {
+  const loggedInUser = useSelector(state => state.chat.loggedInUser);
+  const clickedUser = useSelector(state => state.chat.clickedUser);
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
 
@@ -12,18 +12,23 @@ const clickedUser = useSelector(state => state.chat.clickedUser);
     if (message.trim() === '') return;
 
     setIsSending(true);
-    console.log("loggedInUser: ",loggedInUser,"clickedUser: ",clickedUser)
+
     try {
-    //   await axios.post('http://localhost:3001/message/messages', {
-    //     sender_username: loggedInUser,
-    //     receiver_username: clickedUser,
-    //     message: message
-    //   });
+      // Emit message to server
       socket.emit('send-chat-message', {
         sender_username: loggedInUser,
         receiver_username: clickedUser,
         message
       });
+
+      // Update sentMessages in Chat component
+      updateSentMessages({
+        sender_username: loggedInUser,
+        receiver_username: clickedUser,
+        message,
+        timestamp: new Date().toISOString() // Example timestamp
+      });
+
       setMessage('');
     } catch (err) {
       console.error('Error sending message:', err.response);

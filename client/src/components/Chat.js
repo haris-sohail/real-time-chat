@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import io from 'socket.io-client';
 import axios from 'axios';
-import InputText from './InputText'; 
+import InputText from './InputText';
 
 const socket = io('http://localhost:3001');
 
@@ -28,12 +28,17 @@ function Chat() {
             socket.on('receive-message', message => {
                 setReceivedMessages(prevMessages => [...prevMessages, message]);
             });
+
+            socket.on('chat-message', message => {
+                updateSentMessages(message);
+            });
         }
 
         return () => {
             socket.off('user-connected');
             socket.off('user-disconnected');
             socket.off('receive-message');
+            socket.off('chat-message');
         };
     }, [loggedInUser]);
 
@@ -73,6 +78,10 @@ function Chat() {
     // Combine and sort messages by timestamp
     const allMessages = [...sentMessages, ...receivedMessages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
+    const updateSentMessages = (message) => {
+        setSentMessages(prevMessages => [...prevMessages, message]);
+    };
+
     if (loading) {
         return (
             <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
@@ -95,7 +104,7 @@ function Chat() {
                 <div className="flex flex-1 items-center justify-center">
                     <em><h4>Start the conversation</h4></em>
                 </div>
-                <InputText socket={socket} loggedInUser={loggedInUser} clickedUser={clickedUser} />
+                <InputText socket={socket} updateSentMessages={updateSentMessages} />
             </div>
         );
     } else {
@@ -112,7 +121,7 @@ function Chat() {
                         <p className='text-sm p-1 text-gray-500'>{new Date(message.timestamp).toLocaleString()}</p>
                     </div>
                 ))}
-                <InputText socket={socket} />
+                <InputText socket={socket} updateSentMessages={updateSentMessages} />
             </div>
         );
     }
