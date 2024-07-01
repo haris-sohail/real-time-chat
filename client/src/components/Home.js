@@ -15,7 +15,7 @@ function Home() {
     const username = data.username;
     const navigate = useNavigate();
     const dispatch = useDispatch();
-    let loading = false;
+    const [loading, setLoading] = useState(false);
 
     // Scroll effects
     useEffect(() => {
@@ -81,12 +81,12 @@ function Home() {
                 console.log(err);
             })
             .finally(() => {
-                loading = false;
+                setLoading(false)
             });
     };
 
     useEffect(() => {
-        loading = true;
+        setLoading(true)
         if (!useEffectCalled) {
             getAllUsers();
         }
@@ -115,7 +115,7 @@ function Home() {
     };
 
     if (loading) {
-        return <h1>Loading...</h1>;
+        return <h1 className='h-screen flex items-center justify-center'>Loading...</h1>;
     } else {
         return (
             <div className='w-full h-full flex items-center justify-center flex-col'>

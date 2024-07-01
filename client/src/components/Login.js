@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const usernameFilled = () => {
@@ -43,7 +42,6 @@ function Login() {
                 toast.success('Login successful');
                 navigate('/home', { state: { username } })
             } else {
-                setError(data.error || 'An error occurred');
                 toast.error(data.error || 'An error occurred');
             }
         }
@@ -57,7 +55,6 @@ function Login() {
             <div className='left flex justify-center items-center flex-1'>
                 <div className='w-1/2 flex flex-col gap-5'>
                     <h1 className='mx-auto'>LOGIN</h1>
-                    {error && <p className="text-red-500">{error}</p>}
                     <form className='flex flex-col gap-5' onSubmit={handleSubmit}>
                         <input
                             type='text'
