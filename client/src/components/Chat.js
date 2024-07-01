@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from 'react'
-import { useSelector } from 'react-redux'
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import io from 'socket.io-client';
-import axios from 'axios'
+import axios from 'axios';
 
 const socket = io('http://localhost:3001');
 
 function Chat() {
-    const loggedInUser = useSelector(state => state.chat.loggedInUser)
-    let clickedUser = useSelector(state => state.chat.clickedUser)
-    const [sentMessages, setSentMessages] = useState([])
-    const [receivedMessages, setReceivedMessages] = useState([])
+    const loggedInUser = useSelector(state => state.chat.loggedInUser);
+    const clickedUser = useSelector(state => state.chat.clickedUser);
+    const [sentMessages, setSentMessages] = useState([]);
+    const [receivedMessages, setReceivedMessages] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (loggedInUser) {
@@ -39,40 +40,52 @@ function Chat() {
         axios.get(`http://localhost:3001/message/messages/${loggedInUser}/${clickedUser}`)
             .then(res => {
                 if (res.data) {
-                    setSentMessages(res.data)
-                    console.log(res.data)
+                    setSentMessages(res.data);
+                    console.log(res.data);
                 }
             })
             .catch(err => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     const fetchReceivedMessages = () => {
         axios.get(`http://localhost:3001/message/messages/${clickedUser}/${loggedInUser}`)
             .then(res => {
                 if (res.data) {
-                    setReceivedMessages(res.data)
-                    console.log(res.data)
+                    setReceivedMessages(res.data);
+                    console.log(res.data);
                 }
             })
             .catch(err => {
-                console.log(err)
-            })
-    }
+                console.log(err);
+            });
+    };
 
     useEffect(() => {
-        // fetch messages between loggedInUser and clickedUser
         if (loggedInUser && clickedUser) {
-            fetchSentMessages()
-            fetchReceivedMessages()
+            setLoading(true);
+            Promise.all([fetchSentMessages(), fetchReceivedMessages()]).then(() => setLoading(false));
         }
-    }, [loggedInUser, clickedUser])
+    }, [loggedInUser, clickedUser]);
 
     // Combine and sort messages by timestamp
     const allMessages = [...sentMessages, ...receivedMessages].sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
 
-    if (clickedUser && allMessages.length === 0) {
+    if (loading) {
+        return (
+            <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
+                {clickedUser && (
+                    <h2 className='mb-4 text-center'>Chat with {clickedUser}</h2>
+                )}
+                <div className="flex flex-1 items-center justify-center">
+                    <em><h4>Loading...</h4></em>
+                </div>
+            </div>
+        );
+    }
+
+    if (!loading && clickedUser && allMessages.length === 0) {
         return (
             <div className="flex flex-col p-2 h-full overflow-y-scroll custom-scrollbar">
                 {clickedUser && (
@@ -102,4 +115,4 @@ function Chat() {
     }
 }
 
-export default Chat
+export default Chat;
