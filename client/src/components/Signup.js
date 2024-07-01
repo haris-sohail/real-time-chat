@@ -30,11 +30,13 @@ function Signup() {
 
         if (isFieldsNotEmpty()) {
             try {
+                console.log("sending into route",username,password)
                 const res = await axios.post('http://localhost:3001/register', { username, password });
 
                 // navigate to login page
                 navigate('/login')
             } catch (err) {
+                console.error("Error during signup:", err);
                 // if error code 409 then user already exists
                 if (err.response.status === 409) {
                     toast.error("Username already exists")

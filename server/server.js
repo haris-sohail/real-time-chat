@@ -37,20 +37,15 @@ io.on('connection', socket => {
     socket.on('send-chat-message', async data => {
         const { sender_username, receiver_username, message } = data;
         try {
-            const senderResult = await pool.query("SELECT user_id FROM accounts WHERE username = $1", [sender_username]);
-            const receiverResult = await pool.query("SELECT user_id FROM accounts WHERE username = $1", [receiver_username]);
-
-            const senderId = senderResult.rows[0].user_id;
-            const receiverId = receiverResult.rows[0].user_id;
-
-            await pool.query("INSERT INTO messages (sender_id, sender_username, receiver_username, message) VALUES ($1, $2, $3, $4)", [senderId, sender_username, receiver_username, message]);
-
+          
+            await pool.query("INSERT INTO messages (sender_username, receiver_username, message) VALUES ($1, $2, $3)", [sender_username, receiver_username, message]);
+    
+          
             socket.broadcast.emit('chat-message', { message, sender_username, receiver_username });
         } catch (err) {
             console.error(err);
         }
     });
-
     socket.on('disconnect', () => {
         const username = users[socket.id];
         console.log(`User ${username} disconnected`);

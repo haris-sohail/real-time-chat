@@ -54,19 +54,16 @@ router.delete('/messages/:message_id', async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
-
 // Sending a new message
 router.post('/messages', async (req, res) => {
   const { sender_username, receiver_username, message } = req.body;
-
+  console.log("sender_username",sender_username,"receiver_username",receiver_username,"message",message);
   try {
-    const senderResult = await pool.query("SELECT user_id FROM accounts WHERE username = $1", [sender_username]);
-    const receiverResult = await pool.query("SELECT user_id FROM accounts WHERE username = $1", [receiver_username]);
-
-    const senderId = senderResult.rows[0].user_id;
-    const receiverId = receiverResult.rows[0].user_id;
-
-    await pool.query("INSERT INTO messages (sender_id, sender_username, receiver_username, message) VALUES ($1, $2, $3, $4)", [senderId, sender_username, receiver_username, message]);
+    
+    await pool.query(
+      "INSERT INTO messages (sender_username, receiver_username, message) VALUES ($1, $2, $3)",
+      [sender_username, receiver_username, message]
+    );
 
     res.status(201).json({ message: "Message sent successfully" });
   } catch (err) {
@@ -74,6 +71,7 @@ router.post('/messages', async (req, res) => {
     res.status(500).json({ error: "Database error" });
   }
 });
+
 
 // get messages by sender and receiver
 router.get('/messages/:sender_username/:receiver_username', async (req, res) => {

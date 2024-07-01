@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import io from 'socket.io-client';
 import axios from 'axios';
+import InputText from './InputText'; 
 
 const socket = io('http://localhost:3001');
 
@@ -37,7 +38,7 @@ function Chat() {
     }, [loggedInUser]);
 
     const fetchSentMessages = () => {
-        axios.get(`http://localhost:3001/message/messages/${loggedInUser}/${clickedUser}`)
+        return axios.get(`http://localhost:3001/message/messages/${loggedInUser}/${clickedUser}`)
             .then(res => {
                 if (res.data) {
                     setSentMessages(res.data);
@@ -50,7 +51,7 @@ function Chat() {
     };
 
     const fetchReceivedMessages = () => {
-        axios.get(`http://localhost:3001/message/messages/${clickedUser}/${loggedInUser}`)
+        return axios.get(`http://localhost:3001/message/messages/${clickedUser}/${loggedInUser}`)
             .then(res => {
                 if (res.data) {
                     setReceivedMessages(res.data);
@@ -94,6 +95,7 @@ function Chat() {
                 <div className="flex flex-1 items-center justify-center">
                     <em><h4>Start the conversation</h4></em>
                 </div>
+                <InputText socket={socket} loggedInUser={loggedInUser} clickedUser={clickedUser} />
             </div>
         );
     } else {
@@ -110,6 +112,7 @@ function Chat() {
                         <p className='text-sm p-1 text-gray-500'>{new Date(message.timestamp).toLocaleString()}</p>
                     </div>
                 ))}
+                <InputText socket={socket} />
             </div>
         );
     }

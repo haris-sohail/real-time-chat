@@ -7,6 +7,8 @@ function Person({ loggedInUsername, username }) {
 
     const handlePersonClick = () => {
         // set clicked user and loggedin user in redux store
+        console.log("setClickedUser",username)
+        console.log("loggedInUsername",loggedInUsername)
         dispatch(setClickedUser(username))
         dispatch(setLoggedInUser(loggedInUsername))
     }

@@ -15,7 +15,6 @@ router.get('/users', async (req, res) => {
     }
 });
 
-
 router.post("/register",
     [
         body("username").isLength({ min: 3 }),
@@ -53,6 +52,7 @@ router.post("/register",
         }
     }
 );
+
 
 router.post("/login",
     [

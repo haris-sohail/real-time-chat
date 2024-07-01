@@ -1,20 +1,20 @@
-import React, { useEffect, useState } from 'react'
-import Person from './Person'
-import axios from 'axios'
-import { useLocation, useNavigate } from 'react-router-dom'
-import Chat from './Chat'
+import React, { useEffect, useState } from 'react';
+import Person from './Person';
+import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
+import Chat from './Chat';
 
 function Home() {
     const useEffectCalled = false;
-    const [users, setUsers] = useState([])
-    const [usersComponents, setUsersComponents] = useState([])
-    const location = useLocation()
-    const data = location.state
-    const username = data.username
-    const navigate = useNavigate()
+    const [users, setUsers] = useState([]);
+    const [usersComponents, setUsersComponents] = useState([]);
+    const location = useLocation();
+    const data = location.state;
+    const username = data.username;
+    const navigate = useNavigate();
     let loading = false;
 
-    // scroll effects
+    // Scroll effects
     useEffect(() => {
         const peopleList = document.querySelector('.people-list');
 
@@ -71,23 +71,23 @@ function Home() {
         axios.get('http://localhost:3001/users')
             .then(res => {
                 if (res.data) {
-                    setUsers(res.data)
+                    setUsers(res.data);
                 }
             })
             .catch(err => {
-                console.log(err)
+                console.log(err);
             })
             .finally(() => {
                 loading = false;
-            })
-    }
+            });
+    };
 
     useEffect(() => {
         loading = true;
         if (!useEffectCalled) {
-            getAllUsers()
+            getAllUsers();
         }
-    }, [])
+    }, []);
 
     useEffect(() => {
         if (users) {
@@ -97,23 +97,21 @@ function Home() {
                         key={user.user_id}
                         loggedInUsername={username}
                         username={user.username}
-                    />
+                    />;
                 }
-            })
+            });
 
-            setUsersComponents(usersComp)
+            setUsersComponents(usersComp);
         }
-    }, [users])
+    }, [users]);
 
     const handleLogOut = () => {
-        navigate('/login')
-    }
+        navigate('/login');
+    };
 
     if (loading) {
-        return <h1>Loading...</h1>
-    }
-
-    else {
+        return <h1>Loading...</h1>;
+    } else {
         return (
             <div className='w-full h-full flex items-center justify-center flex-col'>
                 <div className='first-row w-3/4 flex justify-between items-center p-5'>
@@ -138,12 +136,8 @@ function Home() {
                     </div>
                 </div>
             </div>
-
-        )
+        );
     }
-
 }
 
-export default Home
-
-
+export default Home;
