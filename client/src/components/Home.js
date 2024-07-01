@@ -3,6 +3,8 @@ import Person from './Person';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Chat from './Chat';
+import { useDispatch } from 'react-redux';
+import { setClickedUser, setLoggedInUser } from '../ChatSlice';
 
 function Home() {
     const useEffectCalled = false;
@@ -12,6 +14,7 @@ function Home() {
     const data = location.state;
     const username = data.username;
     const navigate = useNavigate();
+    const dispatch = useDispatch();
     let loading = false;
 
     // Scroll effects
@@ -106,6 +109,8 @@ function Home() {
     }, [users]);
 
     const handleLogOut = () => {
+        dispatch(setLoggedInUser(''))
+        dispatch(setClickedUser(''))
         navigate('/login');
     };
 

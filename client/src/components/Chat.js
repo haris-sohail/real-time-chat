@@ -18,11 +18,11 @@ function Chat() {
             socket.emit('new-user', loggedInUser);
 
             socket.on('user-connected', name => {
-                console.log(`User connected: ${name}`);
+                // console.log(`User connected: ${name}`);
             });
 
             socket.on('user-disconnected', name => {
-                console.log(`User disconnected: ${name}`);
+                // console.log(`User disconnected: ${name}`);
             });
 
             socket.on('receive-message', message => {
@@ -47,7 +47,7 @@ function Chat() {
             .then(res => {
                 if (res.data) {
                     setSentMessages(res.data);
-                    console.log(res.data);
+                    // console.log(res.data);
                 }
             })
             .catch(err => {
@@ -60,7 +60,7 @@ function Chat() {
             .then(res => {
                 if (res.data) {
                     setReceivedMessages(res.data);
-                    console.log(res.data);
+                    // console.log(res.data);
                 }
             })
             .catch(err => {
@@ -69,6 +69,7 @@ function Chat() {
     };
 
     useEffect(() => {
+        console.log(loggedInUser)
         if (loggedInUser && clickedUser) {
             setLoading(true);
             Promise.all([fetchSentMessages(), fetchReceivedMessages()]).then(() => setLoading(false));
