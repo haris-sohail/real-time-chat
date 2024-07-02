@@ -115,7 +115,7 @@ function Chat() {
                 <div className="flex flex-1 items-center justify-center">
                     <em><h4>Start the conversation</h4></em>
                 </div>
-                <InputText socket={socket} loggedInUser={loggedInUser} clickedUser={clickedUser} />
+                <InputText socket={socket} loggedInUser={loggedInUser} clickedUser={clickedUser} updateSentMessages={updateSentMessages} />
             </div>
         );
     } else {
@@ -132,7 +132,7 @@ function Chat() {
                         <p className='text-sm p-1 text-gray-500'>{new Date(message.timestamp).toLocaleString()}</p>
                     </div>
                 ))}
-                <InputText socket={socket} updateSentMessages={updateSentMessages} />
+                <InputText socket={socket} loggedInUser={loggedInUser} clickedUser={clickedUser} updateSentMessages={updateSentMessages} />
             </div>
         );
     }

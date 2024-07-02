@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
-const InputText = ({ socket, updateSentMessages }) => {
-  const loggedInUser = useSelector(state => state.chat.loggedInUser);
-  const clickedUser = useSelector(state => state.chat.clickedUser);
+const InputText = ({ socket, loggedInUser, clickedUser, updateSentMessages }) => {
   const [message, setMessage] = useState('');
   const [isSending, setIsSending] = useState(false);
 
@@ -13,25 +11,22 @@ const InputText = ({ socket, updateSentMessages }) => {
     setIsSending(true);
 
     try {
-      // Emit message to server
-      socket.emit('send-chat-message', {
+      const newMessage = {
         sender_username: loggedInUser,
         receiver_username: clickedUser,
         message,
         timestamp: new Date().toISOString()
-      });
+      };
+
+      // Emit message to server
+      socket.emit('send-chat-message', newMessage);
 
       // Update sentMessages in Chat component
-      updateSentMessages({
-        sender_username: loggedInUser,
-        receiver_username: clickedUser,
-        message,
-        timestamp: new Date().toISOString()
-      });
+      updateSentMessages(newMessage);
 
       setMessage('');
     } catch (err) {
-      console.error('Error sending message:', err.response);
+      console.error('Error sending message:', err);
     } finally {
       setIsSending(false);
     }
